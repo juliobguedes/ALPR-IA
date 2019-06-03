@@ -17,7 +17,9 @@ import pandas as pd
 
 import os, json, itertools, random
 
-from classes import FilterSequence, Image, PipelineStream
+from ..classes.Image import Image
+from ..classes.FilterSequence import FilterSequence
+from ..classes.PipelineStream import PipelineStream
 
 
 # In[ ]:

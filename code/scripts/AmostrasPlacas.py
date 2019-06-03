@@ -23,7 +23,7 @@ import pandas as pd
 
 import os, json, itertools, random
 
-from classes import Image
+from ..classes.Image import Image
 
 
 # In[2]:

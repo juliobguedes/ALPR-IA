@@ -18,7 +18,9 @@ import os, json, itertools
 
 # In[2]:
 
-from classes import Image, FilterSequence, PipelineStream
+from ..classes.Image import Image
+from ..classes.FilterSequence import FilterSequence
+from ..classes.PipelineStream import PipelineStream
 
 # from google.colab import files, drive
 # drive.mount('/content/drive')
