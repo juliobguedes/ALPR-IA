@@ -36,12 +36,16 @@ class PipelineStream():
         img = self.images[j]
         filt.image = img
         filt.apply_and_draw2(rectangle=rec, show=False, area=ar, ratio=rat)
-        score = filt.image.score()
+        score = filt.image.score(full=True)
         total += score
         
         i += 1
-        if (i % 500 == 0): print("Current Progress: %d" % i)
-        if (j > 7): break
+        if (i % 500 == 0):
+          print("\nCurrent Progress: %d" % i)
+          print("CurrentScore: %d" % total)
+          print("MaxScore: %d" % full_score[1])
+
+        if (j >= 7): break
       
       if (full_score[1] < total):
         full_score = (filt, total, rec, ar, rat)

@@ -63,7 +63,7 @@ class Image():
     cv2.rectangle(cpimage, (x, y), (x+w, y+h), (0, 0, 255), 2)
     self.show_image(cpimage)
     
-  def score(self):
+  def score(self, full=False):
     def intersection_size(x1, x2, w1, w2):
       x1_comeca = x1 <= x2
       indep = (x1 > x2 and x1 > x2+w2) or (x2 > x1 and x2 > x1+w1)
@@ -87,8 +87,11 @@ class Image():
     x, y, w, h = map(int, self.metadata['position_plate'].split(" "))
     true_area = w * h
     max_intersect = 0
+
+    contours = self.selected_contours.copy()
+    if (full): contours.extend(self.contours.copy())
     
-    for sel in self.selected_contours:
+    for sel in contours:
       x1, y1, w1, h1 = sel
       if ((w1 * h1) <= 2.5 * true_area):
         intersect_x = intersection_size(x, x1, w, w1)

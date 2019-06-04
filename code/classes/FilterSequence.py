@@ -55,7 +55,7 @@ class FilterSequence():
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, rectangle)
     dilated = cv2.dilate(img, kernel, 1)
     _, contours1, _ = cv2.findContours(dilated,
-                                              cv2.RETR_TREE,
+                                              cv2.RETR_EXTERNAL,
                                               cv2.CHAIN_APPROX_SIMPLE)
     
     color = cv2.cvtColor(self.trueImage, cv2.COLOR_GRAY2BGR)
