@@ -49,6 +49,7 @@ class Image():
   def crop_plate(self, path=None, save=False):
     x, y, w, h = map(int, self.metadata['position_plate'].split(" "))
     cropped = self.crop_region(x, y, w, h)
+    cropped = cv2.resize(cropped, (92, 30))
     if (save and not path is None):
       cv2.imwrite(path+self.name+'.png', cropped)
 
