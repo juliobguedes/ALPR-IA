@@ -52,6 +52,7 @@ class Image():
         cropped = cv2.resize(cropped, (92, 30))
         if (save and not path is None):
             cv2.imwrite(path+self.name+'.png', cropped)
+        return (x, y, w, h)
   
     def draw_real_plate(self):
         if (self.metadata is None):
