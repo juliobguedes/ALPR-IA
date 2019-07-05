@@ -1,4 +1,5 @@
 import cv2, itertools
+import numpy as np
 from classes.Image import Image
 from classes.FilterSequence import FilterSequence
 
@@ -11,44 +12,53 @@ class PipelineStream():
       self.images.append(temp)
     self.filters = []
     
-  def score_filters(self):
+  def score_filters(self, iou=False):
     # full_score = (index, score, rectangle)
     full_score = (-1, 0, ())
     
     # 16
-    rectangles = [(x, y) for x in range(11, 18, 2) for y in range(5, 12, 2) if x > y]
+    rectangles = [(x, y) for x in range(11, 93, 2) for y in range(9, 35, 2) if x > y]
     
     # 20
-    areas = [(a_min * 100, a_max * 1000) for a_min in range(17, 24, 2) for a_max in range(17, 26, 2)]
+    areas = [(1400, 1500)]
     
     # 25
-    ratios = [(r_min/100, r_max) for r_min in range(1, 151, 45) for r_max in range(7, 64, 27)]
+    ratios = [(3, 5)]
     
     pair = [self.filters, rectangles, areas, ratios] # 16 * 20 * 25 = 8000
     
-    l = len(self.filters) * len(rectangles) * len(areas) * len(ratios) * 8
+    l = len(self.filters) * len(rectangles) * len(areas) * len(ratios) * len(self.images)
     print("Executing %d combinations" % l)
     i = 0
     
     for filt, rec, ar, rat in itertools.product(*pair):
-      total = 0
+      total = 0 if not iou else []
       for j in range(len(self.images)):
         img = self.images[j]
         filt.image = img
         filt.apply_and_draw2(rectangle=rec, show=False, area=ar, ratio=rat)
-        score = filt.image.score(full=True)
-        total += score
+        score = filt.image.score(full=True) if not iou else filt.image.score_iou(full=True)
+        if (score != 0):
+            print(img.name, score)
+        if (not iou):
+            total += score
+        else:
+            total.append(score)
         
         i += 1
         if (i % 500 == 0):
+          parcial = total if not iou else np.average(total)
           print("\nCurrent Progress: %d" % i)
-          print("CurrentScore: %d" % total)
-          print("MaxScore: %d" % full_score[1])
-
-        if (j >= 7): break
+          print("CurrentScore: %.2f" % parcial)
+          print("MaxScore: %.2f" % full_score[1])
       
-      if (full_score[1] < total):
-        full_score = (filt, total, rec, ar, rat)
+        if not iou:
+            if (full_score[1] < total):
+                full_score = (filt, total, rec, ar, rat)
+        else:
+            if (full_score[1] < np.average(total)):
+                full_score = (filt, np.average(total), rec, ar, rat)
+        
         
     return full_score
   
